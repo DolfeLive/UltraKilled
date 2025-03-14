@@ -1,0 +1,150 @@
+@font-face {
+    font-family: 'VCR';
+    src: url('fonts/VCR_OSD_MONO_1.001.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: VCR, monospace;
+}
+
+body {
+    min-height: 100vh;
+    background-color: #121212;
+    color: #e0e0e0;
+    padding: 20px;
+}
+
+h2 {
+    color: #FF0000;
+    text-decoration: underline;
+    text-align: center;
+    font-size: 2;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: #1e1e1e;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    color: #ff0000;
+}
+
+.subtitle {
+    font-size: 1.1rem;
+    color: #aaa;
+}
+
+.search-container {
+    display: flex;
+    margin-bottom: 30px;
+}
+
+#searchBar {
+    flex: 1;
+    padding: 12px 15px;
+    border: 2px solid #333;
+    background: #2a2a2a;
+    color: #fff;
+    font-size: 1rem;
+    border-radius: 4px 0 0 4px;
+}
+
+#searchBtn {
+    padding: 12px 20px;
+    background: #da7272;
+    color: white;
+    border: none;
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.2s;
+}
+
+#searchBtn:hover {
+    background: #bc5f5f;
+}
+
+.status-card {
+    background: #2a2a2a;
+    padding: 20px;
+    border-radius: 6px;
+    margin-bottom: 30px;
+    border-left: 5px solid #da7272;
+}
+
+.status {
+    display: inline-block;
+    padding: 8px 15px;
+    margin: 15px 0;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.status-broken {
+    background: #d32f2f;
+    color: white;
+}
+
+.status-slightly-broken {
+    background: #813f3f;
+    color: white;
+}
+
+.status-working {
+    background: #388e3c;
+    color: white;
+}
+
+.help-content {
+    margin-top: 40px;
+}
+
+.help-card {
+    background: #2a2a2a;
+    padding: 20px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+}
+
+.help-card h3 {
+    color: #ff0000;
+    margin-bottom: 10px;
+}
+
+.help-card a {
+    color: #FF5733;
+}
+
+footer {
+    margin-top: 40px;
+    text-align: center;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.hidden {
+    display: none;
+}
+
+.status-card #modName {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
