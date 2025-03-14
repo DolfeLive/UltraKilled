@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         'jaket': {
             broken: 2,
-            message: 'Jaket wont be updated for a while, just wait or downpatch'
+            message: 'Jaket wont be updated for a while, just wait or downpatch downpatch guide linked in main page or just follow this link: https://steamcommunity.com/sharedfiles/filedetails/?id=1086279994'
         }
     };
 
