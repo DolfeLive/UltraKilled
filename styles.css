@@ -1,3 +1,4 @@
+/* Font */
 @font-face {
     font-family: 'VCR';
     src: url('fonts/VCR_OSD_MONO_1.001.ttf') format('truetype');
@@ -5,6 +6,7 @@
     font-style: normal;
 }
 
+/* Global Styles */
 * {
     margin: 0;
     padding: 0;
@@ -19,31 +21,18 @@ body {
     padding: 20px;
 }
 
-h2 {
-    color: #ff4040;
-    text-decoration: underline;
-    text-align: center;
-    font-size: 2;
-}
-
-.container {
-    max-width: 800px;
-    margin: 0 auto;
-    background: #1e1e1e;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-}
-
-header {
-    text-align: center;
-    margin-bottom: 30px;
-}
-
+/* headers + another thingy */
 h1 {
     font-size: 2.5rem;
     margin-bottom: 10px;
     color: #ff0000;
+}
+
+h2 {
+    color: #ff4040;
+    text-decoration: underline;
+    text-align: center;
+    font-size: 2rem;
 }
 
 .subtitle {
@@ -51,6 +40,31 @@ h1 {
     color: #aaa;
 }
 
+/* Layout and Containers */
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    background: #1e1e1e;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+
+.results-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+/* Header */
+header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+/* Search Bar */
 .search-container {
     display: flex;
     margin-bottom: 30px;
@@ -81,6 +95,7 @@ h1 {
     background: #bc5f5f;
 }
 
+/* Status */
 .status-card {
     background: #2a2a2a;
     padding: 20px;
@@ -89,29 +104,138 @@ h1 {
     border-left: 5px solid #da7272;
 }
 
+.status-card p {
+    font-size: 20px;
+}
+
 .status {
     display: inline-block;
     padding: 8px 15px;
     margin: 15px 0;
     border-radius: 4px;
     font-weight: bold;
-}
-
-.status-broken {
-    background: #d32f2f;
-    color: white;
-}
-
-.status-slightly-broken {
-    background: #813f3f;
-    color: white;
+    margin-right: 8px;
 }
 
 .status-working {
     background: #388e3c;
     color: white;
+    position: relative;
+}
+.status-working::after {
+    content: "The mod has a extreemly high chance of working, if errors happen refer to the help page";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #813f3f;
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+    white-space: nowrap;
+    font-size: 18px;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    pointer-events: none;
+    font-weight: normal;
+}
+.status-working:hover::after {
+    opacity: 1;
 }
 
+.status-broken {
+    background: #d32f2f;
+    color: white;
+    position: relative;
+}
+.status-broken::after {
+    content: "The mod will 9/10 times be broken and not work, downpatching to play is reccomened (check in help page for a tut)";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #813f3f;
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+    white-space: nowrap;
+    font-size: 18px;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    pointer-events: none;
+    font-weight: normal;
+}
+.status-broken:hover::after {
+    opacity: 1;
+}
+
+
+.status-slightly-broken {
+    background: #813f3f;
+    color: white;
+    position: relative;
+}
+.status-slightly-broken::after {
+    content: "The mod might work but most likey wont be working, downpatching to play is reccomened (check in help page for a tut)";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #813f3f;
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+    white-space: nowrap;
+    font-size: 18px;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    pointer-events: none;
+    font-weight: normal;
+}
+.status-slightly-broken:hover::after {
+    opacity: 1;
+}
+
+.status-card #modName {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.status-card a {
+    color: #bf3535;
+}
+
+/* status: deprecated */
+.status-deprecated {
+    background: #3e1010;
+    color: white;
+    position: relative;
+}
+
+.status-deprecated::after {
+    content: "When a mod is deprecated that means the mod is broken and the mod isnt updated yet (or it wont be)";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #3e1010;
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+    white-space: nowrap;
+    font-size: 18px;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    pointer-events: none;
+    font-weight: normal;
+}
+
+.status-deprecated:hover::after {
+    opacity: 1;
+}
+
+/* Help */
 .help-content {
     margin-top: 40px;
 }
@@ -132,6 +256,42 @@ h1 {
     color: #FF5733;
 }
 
+/* Messages */
+.no-results,
+.error-message {
+    padding: 20px;
+    background-color: #1e1e1e;
+    border-radius: 8px;
+    text-align: center;
+    color: #f0f0f0;
+}
+
+.error-message {
+    background-color: #3d1a1a;
+}
+
+.match-info {
+    font-size: 0.8em;
+    opacity: 0.7;
+    font-weight: normal;
+}
+
+/* Buttons */
+.back-button {
+    background-color: #2a2a2a;
+    border: none;
+    color: #f0f0f0;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-bottom: 15px;
+}
+
+.back-button:hover {
+    background-color: #444;
+}
+
+/* Footer */
 footer {
     margin-top: 40px;
     text-align: center;
@@ -139,12 +299,30 @@ footer {
     font-size: 0.9rem;
 }
 
+/* Hidden */
 .hidden {
     display: none;
 }
 
-.status-card #modName {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+/* font switcher */
+.switch-font-btn {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    padding: 10px 15px;
+    background: #da7272;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: background 0.2s;
+}
+
+.switch-font-btn:hover {
+    background: #bc5f5f;
+}
+
+.arial-font * {
+    font-family: Arial, sans-serif !important;
 }

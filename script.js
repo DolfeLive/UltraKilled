@@ -1,4 +1,6 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    let { customModMessages } = await import("./modMessages.js");
+    
     const searchBar = document.getElementById('searchBar');
     const searchBtn = document.getElementById('searchBtn');
     const results = document.getElementById('results');
@@ -16,14 +18,16 @@ document.addEventListener('DOMContentLoaded', () => {
     .then(response => {
         const contentLength = response.headers.get('Content-Length');
         console.log(`Total fetch size: ${contentLength} bytes`);
-
+        
         return response.json();
     })    .then(data => {
         modList = data.map(mod => {
             const unixTimestamp = new Date(mod.date_updated).getTime() / 1000;
             return {
                 modName: mod.name,
-                unixTimestamp: unixTimestamp
+                unixTimestamp: unixTimestamp,
+                url: mod.package_url,
+                deprecated: mod.is_deprecated,
             };
         });
         console.log(modList);
@@ -37,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const breakingUpdates = {
         majorUpdate1: {
             date: 1740420240, // Feb 25, 2025 5:04AM AEDT // Revamp
-            brokenness: 1         // Very Broken
+            brokenness: 2         // Very Broken
         },
         majorUpdate2: {
             date: 1713209760, // Aprl 16, 2024 5:36AM AEDT // Full arsenal
@@ -49,84 +53,80 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
     
-    const customModMessages = {
-        'angrylevelloader ': {
-            broken: 1,
-            message: 'At the time of writing this, the mod internally is fixed but the update will be released later because map makers need to fix their maps'
-        },
-        'rude': {
-            broken: 1,
-            message: 'At the time of writing this, the mod internally is fixed but the update will be released later because map makers need to fix their maps'
-        },
-        'UltraModManager': {
-            broken: 2,
-            message: 'This mod was last updated over 2 years ago and deprecated'
-        },
-        'r2modman': {
-            broken: 0,
-            message: 'R2ModMan is a mod manager not a mod and so wont break on update'
-        },
-        'bepinex': {
-            broken: 0,
-            message: 'bepinex is a mod loader and will work even after an update BUT you may need to set hidemanagergameobject to true in config'
-        },
-        'jaket': {
-            broken: 2,
-            message: 'Jaket wont be updated for a while, just wait or downpatch downpatch guide linked in main page or just follow this link: https://steamcommunity.com/sharedfiles/filedetails/?id=1086279994'
-        }
-    };
-
     function handleSearch() {
         const query = searchBar.value.trim();
         if (!query) return;
         
-        checkModStatus(query);
+        searchMods(query);
     }
 
-    function checkModStatus(modQuery) {
-        console.log(`Checking status for: ${modQuery}`);
+    function searchMods(modQuery) {
+        console.log(`Searching for: ${modQuery}`);
         
         results.classList.remove('hidden');
         helpContent.classList.add('hidden');
         
-        modName.textContent = modQuery;
+        results.innerHTML = '';
         
-        fetchModData(modQuery)
-        .then(data => {
-            for (const mod in customModMessages) {
-                if (mod.toLowerCase().trim() === modQuery.toLowerCase().trim()) {
-                    const info = customModMessages[mod];
-                    updateStatus(info.broken, info.message);
+        const backButton = document.createElement('button');
+        backButton.id = 'backToHelp';
+        backButton.textContent = 'Back to Help';
+        backButton.className = 'back-button';
+        results.appendChild(backButton);
+        
+        const resultsHeading = document.createElement('h2');
+        resultsHeading.textContent = `Search Results for "${modQuery}"`;
+        results.appendChild(resultsHeading);
+        
+        const queryLower = modQuery.toLowerCase().trim();
+        let foundCustomMod = false;
+        
+        for (const customMod in customModMessages) {
+            if (customMod.toLowerCase().trim() === queryLower) {
+                foundCustomMod = true;
+                const customModInfo = customModMessages[customMod];
+                
+                const mockMod = {
+                    modName: customMod,
+                    unixTimestamp: Date.now() / 1000,
+                    url: "#"
+                };
+                
+                const resultsContainer = document.createElement('div');
+                resultsContainer.className = 'results-container';
+                results.appendChild(resultsContainer);
+                
+                const modCard = createModCard(mockMod, modQuery);
+                resultsContainer.appendChild(modCard);
+                break;
+            }
+        }
+        fetchModMatches(modQuery, foundCustomMod)
+            .then(matches => {
+                if (matches.length === 0) {
+                    const noResults = document.createElement('p');
+                    noResults.textContent = `No mods found matching "${modQuery}". Please check your spelling or try another search term.`;
+                    noResults.className = 'no-results';
+                    results.appendChild(noResults);
                     return;
                 }
-            }
-            if (!data.exactMatch) {
-                modName.textContent = `${data.modName} (closest match to "${modQuery}")`;
-            }
-            
-            const modDate = data.lastUpdateEpoch;
-            const isOutdated = checkIfOutdated(modDate);
-            
-            const normalizedModName = data.modName.toLowerCase().trim();
-            
-            for (const mod in customModMessages) {
-                if (mod.toLowerCase().trim() === normalizedModName) {
-                    const info = customModMessages[mod];
-                    updateStatus(info.broken, info.message);
-                    return;
-                }
-            }
-            
-            let message = getDefaultMessage(isOutdated, modDate * 1000);
-            
-            updateStatus(isOutdated, message);
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            statusText.textContent = 'NOT FOUND';
-            statusIndicator.className = 'status status-unknown';
-            modDetails.textContent = `Couldn't find a mod matching "${modQuery}". Please check your spelling or try another mod name.`;
-        });
+                
+                const resultsContainer = document.createElement('div');
+                resultsContainer.className = 'results-container';
+                results.appendChild(resultsContainer);
+                
+                matches.forEach(mod => {
+                    const modCard = createModCard(mod, modQuery);
+                    resultsContainer.appendChild(modCard);
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                const errorElement = document.createElement('p');
+                errorElement.textContent = `Error: ${error}`;
+                errorElement.className = 'error-message';
+                results.appendChild(errorElement);
+            });
     }
     
     function checkIfOutdated(modDateEpoch) {
@@ -139,30 +139,112 @@ document.addEventListener('DOMContentLoaded', () => {
         return 0;
     }
     
-    function getDefaultMessage(isBroken, modDateEpoch) {
+    function getDefaultMessage(isBroken, modDateEpoch, mod) {
         if (isBroken) {
             const updateDate = new Date(modDateEpoch).toLocaleDateString();
-            return `This mod was last updated on ${updateDate}, which is before a major game update. It's likely incompatible with the current game version.`;
+            return `${mod.modName} was last updated on ${updateDate}, which is before a major game update. It's likely incompatible with the current game version. It may work but dont count on it`;
         } else {
-            return 'This mod appears to be compatible with the current game version.';
+            return `${mod.modName} is most likey going to work with the current game version.`;
         }
     }
     
-    function updateStatus(brokenness, message) {
+    function createModCard(mod, query) {
+        const modCard = document.createElement('div');
+        modCard.className = 'status-card';
+        
+        const modNameEl = document.createElement('h2');
+        const modLink = document.createElement('a');
+        modLink.href = mod.url;
+        modLink.textContent = mod.modName;
+        modLink.target = '_blank';
+        
+        modNameEl.appendChild(modLink);
+        if (mod.modName.toLowerCase() !== query.toLowerCase()) {
+            const matchInfo = document.createElement('span');
+            matchInfo.textContent = `(match for "${query}")`;
+            matchInfo.className = 'match-info';
+            
+            modNameEl.appendChild(document.createElement('br'));
+            modNameEl.appendChild(matchInfo);
+        }
+        modCard.appendChild(modNameEl);
+        
+        const modDate = mod.unixTimestamp;
+        let brokenness = checkIfOutdated(modDate);
+        let message = getDefaultMessage(brokenness, modDate * 1000, mod);
+        let deprecated = mod.deprecated ?? false;
+        
+        const normalizedModName = mod.modName.toLowerCase().trim();
+        for (const customMod in customModMessages) {
+            if (customMod.toLowerCase().trim() === normalizedModName) {
+                const info = customModMessages[customMod];
+                brokenness = info.broken;
+                message = info.message;
+                break;
+            }
+        }
+        
+        modCard.style.borderLeft = `5px solid ${brokenness === 2 ? '#da7272' : brokenness === 1 ? '#e0b567' : '#6ac174'}`;
+        
+        for (const customMod in customModMessages) {
+            if (customMod.toLowerCase().trim() === normalizedModName) {
+                const info = customModMessages[customMod];
+                brokenness = info.broken;
+                message = info.message;
+                break;
+            }
+        }
+        
+        const statusIndicator = document.createElement('div');
+        statusIndicator.className = 'status';
+        const statusText = document.createElement('span');
+        
         if (brokenness === 2) {
             statusText.textContent = 'BROKEN';
-            statusIndicator.className = 'status status-broken';
+            statusIndicator.className += ' status-broken';
         } else if (brokenness === 1) {
             statusText.textContent = 'SLIGHTLY BROKEN';
-            statusIndicator.className = 'status status-slightly-broken';
+            statusIndicator.className += ' status-slightly-broken';
         } else {
             statusText.textContent = 'WORKING';
-            statusIndicator.className = 'status status-working';
+            statusIndicator.className += ' status-working';
         }
-        modDetails.textContent = message;
+        
+        statusIndicator.appendChild(statusText);
+        modCard.appendChild(statusIndicator);
+        
+        const deprecatedIndicator = document.createElement('div');
+        deprecatedIndicator.className = 'status';
+        const deprecatedText = document.createElement('span');
+        
+        if (deprecated == true)
+        {
+            deprecatedText.textContent = 'Deprecated';
+            deprecatedIndicator.className += ' status-deprecated';
+        }
+        
+        deprecatedIndicator.appendChild(deprecatedText);
+        modCard.appendChild(deprecatedIndicator);
+        
+        
+        const details = document.createElement('p');
+        details.textContent = message;
+        modCard.appendChild(details);
+        
+        return modCard;
     }
     
-    function fetchModData(modQuery) {
+    function checkIfOutdated(modDateEpoch) {
+        for (const update in breakingUpdates) {
+            const updateInfo = breakingUpdates[update];
+            if (modDateEpoch < updateInfo.date) {
+                return updateInfo.brokenness;
+            }
+        }
+        return 0;
+    }
+    
+    function fetchModMatches(modQuery, foundCustomMod) {
         return new Promise((resolve, reject) => {
             if (errorHappened) {
                 reject(errorMsg);
@@ -174,29 +256,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             
-            const bestMatch = findClosestMatch(modQuery, modList);
-            
-            if (bestMatch) {
-                resolve({
-                    modName: bestMatch.modName,
-                    lastUpdateEpoch: bestMatch.unixTimestamp,
-                    exactMatch: bestMatch.modName.toLowerCase() === modQuery.toLowerCase()
-                });
-            } else {
-                reject("No matching mod found.");
-            }
+            const matches = findMatches(modQuery, modList, foundCustomMod);
+            resolve(matches);
         });
     }
     
-    function findClosestMatch(query, mods) {
-        let queryLower = query.toLowerCase().replace(/\s+/g, ''); // + remove spaces
+    function findMatches(query, mods, foundCustomMod) {
+        const queryLower = query.toLowerCase().replace(/\s+/g, '');
         
-        let bestMatch = null;
-        let bestScore = Infinity;
+        const numElements = foundCustomMod ? 7 : 8;
         
         const exactMatch = mods.find(mod => mod.modName.toLowerCase() === queryLower);
         if (exactMatch) {
-            return exactMatch;
+            return [exactMatch];
         }
         
         const partialMatches = mods.filter(mod => 
@@ -204,28 +276,30 @@ document.addEventListener('DOMContentLoaded', () => {
         );
         
         if (partialMatches.length > 0) {
-            for (const mod of partialMatches) {
-                const distance = levenshteinDistance(queryLower, mod.modName.toLowerCase());
-                if (distance < bestScore) {
-                    bestScore = distance;
-                    bestMatch = mod;
-                }
-            }
-        } else {
-            for (const mod of mods) {
-                const distance = levenshteinDistance(queryLower, mod.modName.toLowerCase());
-                if (distance < bestScore) {
-                    bestScore = distance;
-                    bestMatch = mod;
-                }
-            }
+            partialMatches.sort((a, b) => {
+                const aDistance = levenshteinDistance(queryLower, a.modName.toLowerCase());
+                const bDistance = levenshteinDistance(queryLower, b.modName.toLowerCase());
+                return aDistance - bDistance;
+            });
+            return partialMatches.slice(0, numElements);
         }
         
-        if (bestScore <= Math.max(5, queryLower.length / 2)) {
-            return bestMatch;
-        }
+        const allMatches = mods.map(mod => {
+            const distance = levenshteinDistance(queryLower, mod.modName.toLowerCase());
+            return {
+                ...mod,
+                distance
+            };
+        });
         
-        return null;
+        allMatches.sort((a, b) => a.distance - b.distance);
+        
+        const maxDistance = Math.max(5, queryLower.length / 2);
+        const closeMatches = allMatches
+            .filter(mod => mod.distance <= maxDistance)
+            .slice(0, numElements);
+        
+        return closeMatches;
     }
     
     function levenshteinDistance(str1, str2) {
@@ -262,6 +336,19 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.target.id === 'backToHelp') {
             results.classList.add('hidden');
             helpContent.classList.remove('hidden');
+        }
+    });
+    
+    document.getElementById('switchFontBtn').addEventListener('click', function() {
+        const body = document.body;
+        const btn = document.getElementById('switchFontBtn');
+        
+        body.classList.toggle('arial-font');
+        
+        if (body.classList.contains('arial-font')) {
+            btn.textContent = 'Switch Font to VCR';
+        } else {
+            btn.textContent = 'Switch Font to Arial';
         }
     });
 });

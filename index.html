@@ -2,14 +2,21 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=0.9">
     <title>Ultrakilled</title>
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="stylesheet" href="styles.css">    
     <script defer src="script.js"></script>
 </head>
 <body>
+    <style>
+        html {
+            zoom: 90%;
+        }
+    </style>
     <div class="container">
+        <button id="switchFontBtn" class="switch-font-btn">Switch Font to Arial</button>
+        
         <header>
             <h1>Is this mod Ultrakilled?</h1>
             <p class="subtitle">not good compatibility checker tool and guide</p>
@@ -20,15 +27,7 @@
             <button id="searchBtn">Check</button>
         </div>
         
-        <div id="results" class="hidden">
-            <div class="status-card">
-                <h2 id="modName">Mod Name</h2>
-                <div id="statusIndicator" class="status">
-                    <span id="statusText">Unknown</span>
-                </div>
-                <p id="modDetails">Additional details will appear here.</p>
-            </div>
-        </div>
+        <div id="results" class="hidden"></div>
         
         <div id="helpContent" class="help-content">
             <h2>Common Mod Issues & Solutions</h2>
@@ -40,7 +39,7 @@
             
             <div class="help-card">
                 <h3>Config settings</h3>
-                <p>If you are expriencing errors and a mod isnt working try: Opening up BepInExConfig in the r2modman config settings and setting HideManagerGameobject to true <br><br> crying</p>
+                <p>If you are expriencing errors and a mod isnt working try: Opening up BepInExConfig in the r2modman config settings and setting HideManagerGameObject to true <br><br> crying</p>
             </div>
             
             <div class="help-card">
@@ -66,7 +65,7 @@
         </div>
         
         <footer>
-            <p>le googlè.</p>
+            <p>Made By Dolfe</p>
         </footer>
     </div>
 </body>
