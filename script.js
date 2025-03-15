@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
         fetchModData(modQuery)
         .then(data => {
             for (const mod in customModMessages) {
-                if (mod.toLowerCase().trim() === modQuery) {
+                if (mod.toLowerCase().trim() === modQuery.toLowerCase().trim()) {
                     const info = customModMessages[mod];
                     updateStatus(info.broken, info.message);
                     return;
