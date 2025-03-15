@@ -93,6 +93,13 @@ document.addEventListener('DOMContentLoaded', () => {
         
         fetchModData(modQuery)
         .then(data => {
+            for (const mod in customModMessages) {
+                if (mod.toLowerCase().trim() === modQuery) {
+                    const info = customModMessages[mod];
+                    updateStatus(info.broken, info.message);
+                    return;
+                }
+            }
             if (!data.exactMatch) {
                 modName.textContent = `${data.modName} (closest match to "${modQuery}")`;
             }
