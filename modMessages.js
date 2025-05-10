@@ -5,14 +5,6 @@
 // You can have capital letters if ya want (it all gets lowered anyway)
 
 const customModMessages = {
-    'angrylevelloader ': {
-        broken: 1,
-        message: `At the time of writing this, the mod internally is fixed but the update will be released later because map makers need to fix their maps`
-    },
-    'rude': {
-        broken: 1,
-        message: 'At the time of writing this, the mod internally is fixed but the update will be released later because map makers need to fix their maps'
-    },
     'UltraModManager': {
         broken: 2,
         message: 'This mod was last updated over 2 years ago and deprecated'
