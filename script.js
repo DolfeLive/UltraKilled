@@ -40,16 +40,24 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     const breakingUpdates = {
         majorUpdate1: {
-            date: 1740420240, // Feb 25, 2025 5:04AM AEDT // Revamp
-            brokenness: 2         // Very Broken
+            date: 1703097000, // Dec 21, 2023 AEDT // Layer 7
+            brokenness: 3         // Completely broken
         },
         majorUpdate2: {
-            date: 1713209760, // Aprl 16, 2024 5:36AM AEDT // Full arsenal
+            date: 1713209760, // Apr 16, 2024 AEDT // Full Arsenal
             brokenness: 2         // Very Slightly broken
         },
         majorUpdate3: {
-            date: 1703097000, // Dec 21, 2023 5:30AM AEDT // Layer 7
+            date: 1740391200, // Feb 24, 2025 ULTRA_REVAMP Update
             brokenness: 3         // Completely broken
+        },
+        majorUpdate4: {
+            date: 1740420240, // Feb 25, 2025 Revamp+++
+            brokenness: 2         // Very Broken
+        },
+        majorUpdate5: {
+            date: 1766841600, // Feb 25, 2026 FRAUD
+            brokenness: 3         // Frod
         }
     };
     
