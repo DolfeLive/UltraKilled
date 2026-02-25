@@ -138,8 +138,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     
     function checkIfOutdated(modDateEpoch) {
-        for (const update in breakingUpdates) {
-            const updateInfo = breakingUpdates[update];
+        const updates = Object.values(breakingUpdates)
+            .sort((a, b) => b.date - a.date);
+    
+        for (const updateInfo of updates) {
             if (modDateEpoch < updateInfo.date) {
                 return updateInfo.brokenness;
             }
