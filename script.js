@@ -39,26 +39,26 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
     
     const breakingUpdates = {
-        majorUpdate1: {
-            date: 1703097000, // Dec 21, 2023 AEDT // Layer 7
-            brokenness: 3         // Completely broken
-        },
-        majorUpdate2: {
-            date: 1713209760, // Apr 16, 2024 AEDT // Full Arsenal
-            brokenness: 2         // Very Slightly broken
-        },
-        majorUpdate3: {
-            date: 1740391200, // Feb 24, 2025 ULTRA_REVAMP Update
-            brokenness: 3         // Completely broken
-        },
-        majorUpdate4: {
-            date: 1740420240, // Feb 25, 2025 Revamp+++
-            brokenness: 2         // Very Broken
-        },
-        majorUpdate5: {
-            date: 1766841600, // Feb 25, 2026 FRAUD
-            brokenness: 3         // Frod
-        }
+      violentNight: {
+        date: 1703104449, // 2023-12-20 20:34:09 UTC Patch 14: VIOLENT NIGHT
+        brokenness: 3
+      },
+      fullArsenal: {
+        date: 1713208388, // 2024-04-15 19:13:08 UTC Patch 15: FULL ARSENAL
+        brokenness: 2
+      },
+      ultraRevamp: {
+        date: 1740420366, // 2025-02-24 18:06:06 UTC Patch 16: ULTRA_REVAMP
+        brokenness: 3
+      },
+      ultraRevamp_16d: {
+        date: 1743005345, // 2025-03-26 16:09:05 UTC Patch 16d hotfix
+        brokenness: 2
+      },
+      fraud: {
+        date: 1771981995, // 2026-02-25 01:13:15 UTC Patch 17: FRAUD (Layer 8)
+        brokenness: 3
+      }
     };
     
     function handleSearch() {
