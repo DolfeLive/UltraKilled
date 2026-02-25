@@ -22,10 +22,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         return response.json();
     })    .then(data => {
         modList = data.map(mod => {
-            const unixTimestamp = new Date(mod.date_updated).getTime() / 1000;
             return {
                 modName: mod.name,
-                unixTimestamp: unixTimestamp,
+                unixTimestamp: new Date(mod.date_updated).getTime(),
                 url: mod.package_url,
                 deprecated: mod.is_deprecated,
             };
@@ -137,24 +136,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
     }
     
-    function checkIfOutdated(modDateEpoch) {
-        const updates = Object.values(breakingUpdates)
-            .sort((a, b) => b.date - a.date);
-    
-        for (const updateInfo of updates) {
-            if (modDateEpoch < updateInfo.date) {
-                return updateInfo.brokenness;
-            }
-        }
-        return 0;
-    }
-    
-    function getDefaultMessage(isBroken, modDateEpoch, mod) {
+    function getDefaultMessage(isBroken, modDateEpochMs, mod) {
         if (isBroken) {
-            const updateDate = new Date(modDateEpoch).toLocaleDateString();
-            return `${mod.modName} was last updated on ${updateDate}, which is before a major game update. It's likely incompatible with the current game version. It may work but dont count on it`;
+            const updateDate = new Date(modDateEpochMs).toLocaleDateString();
+            return `${mod.modName} was last updated on ${updateDate}, which is before a major game update. It's likely incompatible with the current game version. It may work but don't count on it.`;
         } else {
-            return `${mod.modName} is most likey going to work with the current game version.`;
+            return `${mod.modName} is most likely going to work with the current game version.`;
         }
     }
     
@@ -181,7 +168,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         const modDate = mod.unixTimestamp;
         let brokenness = checkIfOutdated(modDate);
-        let message = getDefaultMessage(brokenness, modDate * 1000, mod);
+        let message = getDefaultMessage(brokenness, modDate, mod);
         let deprecated = mod.deprecated ?? false;
         
         const normalizedModName = mod.modName.toLowerCase().trim();
@@ -209,7 +196,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         statusIndicator.className = 'status';
         const statusText = document.createElement('span');
         
-        if (brokenness === 2) {
+        if (brokenness >= 2) {
             statusText.textContent = 'BROKEN';
             statusIndicator.className += ' status-broken';
         } else if (brokenness === 1) {
@@ -244,15 +231,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         return modCard;
     }
     
-    function checkIfOutdated(modDateEpoch) {
-        for (const update in breakingUpdates) {
-            const updateInfo = breakingUpdates[update];
-            if (modDateEpoch < updateInfo.date) {
-                return updateInfo.brokenness;
-            }
+    function checkIfOutdated(modDateMs) {
+        const updates = Object.values(breakingUpdates).sort((a,b) => b.date - a.date);
+        for (const updateInfo of updates) {
+            if (modDateMs < updateInfo.date * 1000) return updateInfo.brokenness;
         }
         return 0;
     }
+
     
     function fetchModMatches(modQuery, foundCustomMod) {
         return new Promise((resolve, reject) => {
@@ -282,7 +268,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         
         const partialMatches = mods.filter(mod => 
-            mod.modName.toLowerCase().includes(queryLower)
+            mod.modName.toLowerCase().replace(/\s+/g, '').includes(queryLower)
         );
         
         if (partialMatches.length > 0) {
