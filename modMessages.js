@@ -5,10 +5,6 @@
 // You can have capital letters if ya want (it all gets lowered anyway)
 
 const customModMessages = {
-    'UltraModManager': {
-        broken: 2,
-        message: 'This mod was last updated over 2 years ago and deprecated'
-    },
     'r2modman': {
         broken: 0,
         message: 'R2ModMan is a mod manager not a mod and so wont break on update'
@@ -17,10 +13,6 @@ const customModMessages = {
         broken: 0,
         message: 'bepinex is a mod loader and will work even after an update BUT you may need to set hidemanagergameobject to true in config'
     },
-    'jaket': {
-        broken: 2,
-        message: 'Jaket wont be updated for a while, just wait or downpatch downpatch guide linked in main page or just follow this link: https://steamcommunity.com/sharedfiles/filedetails/?id=1086279994'
-    }
 };
 
 export { customModMessages };
